@@ -1,0 +1,46 @@
+def chatbot():
+    print("Chatbot: Hello! I'm a simple rule-based chatbot. Type 'exit' to end the conversation.")
+    
+    while True:
+        # Get input from the user
+        user_input = input("You: ").lower()
+        
+        # Check for exit condition
+        if user_input in ['exit', 'bye', 'quit']:
+            print("Chatbot: Goodbye! Have a nice day!")
+            break
+
+        # Predefined responses based on keywords or phrases
+        elif 'hi' in user_input or 'hello' in user_input or 'hey' in user_input:
+            print("Chatbot: Hi there! How can I assist you today?")
+
+        elif 'how are you' in user_input:
+            print("Chatbot: I'm just a bunch of code, but I'm functioning as expected! How about you?")
+        
+        elif 'i am fine' in user_input:
+            print('Chatbot: Good to know. How can I help you?')
+
+        elif 'name' in user_input:
+            print("Chatbot: I'm a simple chatbot, I don't have a fancy name.")
+
+        elif 'weather' in user_input:
+            print("Chatbot: I can't check the weather, but I hope it's sunny where you are!")
+
+        elif 'help' in user_input:
+            print("Chatbot: I'm here to help. You can ask me simple questions like my name, weather, or how I am.")
+
+        elif 'time' in user_input:
+            from datetime import datetime
+            current_time = datetime.now().strftime('%H:%M:%S')
+            print(f"Chatbot: The current time is {current_time}.")
+
+        elif 'thanks' in user_input or 'thank you' in user_input:
+            print("Chatbot: You're welcome!")
+
+        # If the input doesn't match any rule
+        else:
+            print("Chatbot: Sorry, I didn't understand that. Can you ask something else?")
+
+# Run the chatbot
+if __name__ == "__main__":
+    chatbot()
