@@ -1,0 +1,45 @@
+import pandas as pd
+
+ratings_dict = {
+    'user_id': [1, 1, 1, 2, 2, 3, 3, 3, 4, 4],
+    'movie_id': [101, 102, 103, 101, 104, 101, 103, 104, 102, 103],
+    'rating': [5, 3, 4, 4, 5, 2, 4, 5, 4, 5]
+}
+
+ratings_df = pd.DataFrame(ratings_dict)
+print(ratings_df)
+user_movie_matrix = ratings_df.pivot_table(index='user_id', columns='movie_id', values='rating').fillna(0)
+print(user_movie_matrix)
+from sklearn.metrics.pairwise import cosine_similarity
+
+item_similarity = cosine_similarity(user_movie_matrix.T)
+
+item_similarity_df = pd.DataFrame(item_similarity, index=user_movie_matrix.columns, columns=user_movie_matrix.columns)
+print(item_similarity_df)
+def recommend_movies(user_id, user_movie_matrix, item_similarity_df, top_n=3):
+    # Get the user's movie ratings
+    user_ratings = user_movie_matrix.loc[user_id]
+    
+    # Movies the user has rated
+    rated_movies = user_ratings[user_ratings > 0].index.tolist()
+    
+    # Create a series to hold the total score for each movie
+    total_score = pd.Series(0, index=user_movie_matrix.columns)
+    
+    # Loop through each movie the user has rated
+    for movie in rated_movies:
+        # Get the similarity scores for this movie
+        similar_movies = item_similarity_df[movie]
+        
+        # Add to total score, weighted by the user's rating of the movie
+        total_score += similar_movies * user_ratings[movie]
+    
+    # Remove movies the user has already rated
+    total_score = total_score.drop(rated_movies)
+    
+    # Recommend the top N movies with the highest score
+    return total_score.nlargest(top_n)
+
+# Recommend movies for user 1
+print("Recommended movies for user 1:")
+print(recommend_movies(1, user_movie_matrix, item_similarity_df))
